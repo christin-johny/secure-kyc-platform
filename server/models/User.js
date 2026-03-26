@@ -2,10 +2,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'Please provide a name']
+  },
   email: {
     type: String,
     required: [true, 'Please provide an email address'],
-    unique: true, // Ensures no two users can register with the same email
+    unique: true, 
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       'Please add a valid email'
@@ -15,7 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a password'],
     minlength: 6,
-    select: false // When we query for a user, do NOT return the password by default for security
+    select: false 
   },
   createdAt: {
     type: Date,

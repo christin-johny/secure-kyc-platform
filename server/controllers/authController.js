@@ -8,18 +8,13 @@ const setRefreshCookie = (res, refreshToken) => {
     maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
   });
 };
-
-/* 
-  Controllers (Handlers) now STRICTLY handle HTTP Requests & Responses.
-  They use the imported Service to execute business logic. 
-*/
+ 
 
 exports.register = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    
-    // Abstracted Logic
-    const { accessToken, refreshToken } = await authService.registerUser(email, password);
+    const { name, email, password } = req.body;
+     
+    const { accessToken, refreshToken } = await authService.registerUser(name, email, password);
     
     setRefreshCookie(res, refreshToken);
     res.status(201).json({ success: true, accessToken });
@@ -34,8 +29,7 @@ exports.login = async (req, res) => {
     if (!email || !password) {
       return res.status(400).json({ success: false, error: 'Please provide email and password' });
     }
-
-    // Abstracted Logic
+ 
     const { accessToken, refreshToken } = await authService.loginUser(email, password);
     
     setRefreshCookie(res, refreshToken);
@@ -46,8 +40,7 @@ exports.login = async (req, res) => {
 };
 
 exports.refresh = async (req, res) => {
-  try {
-    // Abstracted Logic
+  try { 
     const accessToken = authService.refreshAccessToken(req.cookies.refreshToken);
     res.status(200).json({ success: true, accessToken });
   } catch (error) {

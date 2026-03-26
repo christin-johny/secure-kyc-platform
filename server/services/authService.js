@@ -13,12 +13,12 @@ const generateTokens = (id) => {
 };
 
 // SRP: Handles ONLY the registration business logic
-exports.registerUser = async (email, password) => {
+exports.registerUser = async (name, email, password) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new Error('User already exists');
   }
-  const user = await User.create({ email, password });
+  const user = await User.create({ name, email, password });
   return generateTokens(user._id);
 };
 
