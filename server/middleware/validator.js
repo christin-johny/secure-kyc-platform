@@ -4,7 +4,7 @@ const { check, validationResult } = require('express-validator');
 exports.registerValidation = [
   check('name', 'Name is required').not().isEmpty(),
   check('email', 'Please include a valid email').isEmail(),
-  check('password', 'Please enter a password with 6 or more characters').isLength({ min: 8 })
+  check('password', 'Please enter a password with 8 or more characters').isLength({ min: 8 })
 ];
 
 // Validation rules for Login
