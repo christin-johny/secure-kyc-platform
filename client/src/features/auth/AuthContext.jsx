@@ -28,16 +28,18 @@ export const AuthProvider = ({ children }) => {
     setToken(accessToken);
   };
 
-  const register = async (name, email, password) => {
-    const res = await api.post('/auth/register', { name, email, password });
+  const register = async (name, email, password, confirmPassword) => {
+    const res = await api.post('/auth/register', { name, email, password, confirmPassword });
     const { accessToken } = res.data;
     setToken(accessToken);
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setToken(null);
     // Ping backend to clear httpOnly refresh cookie
     api.post('/auth/logout').catch(console.error); 
+    window.location.href = '/login';
   };
 
   // Prevent components from rendering until token is read from memory

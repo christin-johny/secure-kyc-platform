@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
@@ -7,11 +7,31 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  
+  const [emailError, setEmailError] = useState('');
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  // Validate Email Live
+  useEffect(() => {
+    if (!email) {
+      setEmailError('');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid structured email address.');
+    } else {
+      setEmailError('');
+    }
+  }, [email]);
+
+  const isFormValid = email && password && !emailError;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isFormValid) return;
     setError('');
     setIsLoading(true);
     try {
@@ -36,11 +56,12 @@ const Login = () => {
           <input 
             type="email" 
             required 
-            className="form-input"
+            className={`form-input ${emailError ? 'input-error' : (email ? 'input-success' : '')}`}
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="john@doe.com"
           />
+          {emailError && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.4rem', fontWeight: '500' }}>{emailError}</p>}
         </div>
         <div className="form-group">
           <label className="form-label">Password</label>
@@ -53,7 +74,7 @@ const Login = () => {
             placeholder="********"
           />
         </div>
-        <button type="submit" className={`btn btn-primary ${isLoading ? 'btn-disabled' : ''}`} disabled={isLoading}>
+        <button type="submit" className={`btn btn-primary ${(isLoading || !isFormValid) ? 'btn-disabled' : ''}`} disabled={isLoading || !isFormValid}>
           {isLoading ? 'Authenticating...' : 'Secure Login'}
         </button>
       </form>

@@ -158,6 +158,55 @@ body {
   background: var(--surface);
 }
 
+.input-error {
+  border-color: var(--danger) !important;
+  background: #fef2f2 !important;
+}
+
+.input-success {
+  border-color: var(--secondary) !important;
+  background: #ecfdf5 !important;
+}
+
+.validation-box {
+  background: var(--surface-hover);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.validation-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.validation-list {
+  list-style-type: none;
+  font-size: 0.85rem;
+  margin: 0;
+  padding: 0;
+}
+
+.validation-list li {
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.validation-list li.valid {
+  color: var(--secondary);
+  font-weight: 500;
+}
+
+.validation-list li.invalid {
+  color: var(--text-muted);
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;

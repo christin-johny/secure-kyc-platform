@@ -6,6 +6,7 @@ import Register from './features/auth/Register';
 import KycCapture from './features/kyc/KycCapture';
 import Dashboard from './features/dashboard/Dashboard';
 import ProtectedRoute from './common/components/ProtectedRoute';
+import PublicRoute from './common/components/PublicRoute';
 
 const NavBar = () => {
   const { token, logout } = useAuth();
@@ -38,11 +39,19 @@ function App() {
         <div className="app-container">
           <NavBar />
           <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* Public Routes (Only accessible if logged OUT) */}
+            <Route path="/login" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            } />
             
-            {/* Protected Routes */}
+            {/* Protected Routes (Only accessible if logged IN) */}
             <Route path="/kyc" element={
               <ProtectedRoute>
                 <KycCapture />
