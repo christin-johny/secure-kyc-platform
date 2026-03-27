@@ -6,58 +6,60 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
-  // Custom Hook pulls functions from our global Context
+  const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     try {
       await login(email, password);
-      // On success, forcefully route user into the protected app
-      navigate('/kyc'); 
+      navigate('/kyc');
     } catch (err) {
-      // Safely navigate the error response object from Axios
       setError(err.response?.data?.errors?.[0]?.msg || err.response?.data?.error || 'Login completely failed');
     }
+    setIsLoading(false);
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '30px', background: 'white', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
-      <h2 style={{ marginBottom: '10px' }}>Sign in to KYC Platform</h2>
-      {error && <div style={{ color: 'red', marginBottom: '15px' }}>{error}</div>}
+    <div className="card">
+      <h2 className="page-title">Welcome Back</h2>
+      <p className="page-subtitle">Please securely sign in to the KYC Platform to continue.</p>
+
+      {error && <div className="alert-error">{error}</div>}
       
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <div>
-          <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Email Address</label>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label className="form-label">Email Address</label>
           <input 
             type="email" 
             required 
+            className="form-input"
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
-            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
             placeholder="john@doe.com"
           />
         </div>
-        <div>
-          <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Password</label>
+        <div className="form-group">
+          <label className="form-label">Password</label>
           <input 
             type="password" 
             required 
+            className="form-input"
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
-            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
             placeholder="********"
           />
         </div>
-        <button type="submit" className="btn-primary" style={{ padding: '12px', fontSize: '1rem', marginTop: '10px' }}>
-          Secure Login
+        <button type="submit" className={`btn btn-primary ${isLoading ? 'btn-disabled' : ''}`} disabled={isLoading}>
+          {isLoading ? 'Authenticating...' : 'Secure Login'}
         </button>
       </form>
-      <p style={{ marginTop: '20px', textAlign: 'center' }}>
-        Don't have an account? <Link to="/register" style={{ color: '#2563eb' }}>Register here</Link>
+      
+      <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+        Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Create one here</Link>
       </p>
     </div>
   );

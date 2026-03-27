@@ -4,25 +4,26 @@ import { AuthProvider, useAuth } from './features/auth/AuthContext';
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
 import KycCapture from './features/kyc/KycCapture';
+import Dashboard from './features/dashboard/Dashboard';
 import ProtectedRoute from './common/components/ProtectedRoute';
 
-// An internal Nav component to access Context
 const NavBar = () => {
   const { token, logout } = useAuth();
   
   return (
-    <nav style={{ padding: '15px 30px', background: '#fff', display: 'flex', justifyContent: 'space-between', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-      <h2 style={{ color: '#1e293b', fontSize: '1.25rem', fontWeight: 'bold' }}>Company KYC Platform</h2>
-      <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+    <nav className="navbar">
+      <div className="nav-brand">KYC Platform</div>
+      <div className="nav-links">
         {token ? (
           <>
-            <Link to="/kyc" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 'bold' }}>KYC Tool</Link>
-            <button onClick={logout} style={{ background: 'none', border: 'none', color: '#ef4444', fontWeight: 'bold', cursor: 'pointer' }}>Logout</button>
+            <Link to="/kyc" className="nav-link">Camera Tool</Link>
+            <Link to="/dashboard" className="nav-link">Dashboard</Link>
+            <button onClick={logout} className="nav-btn-logout">Sign Out</button>
           </>
         ) : (
           <>
-            <Link to="/login" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 'bold' }}>Login</Link>
-            <Link to="/register" style={{ textDecoration: 'none', color: '#1e293b', fontWeight: 'bold' }}>Register</Link>
+            <Link to="/login" className="nav-link">Login</Link>
+            <Link to="/register" className="nav-link" style={{ background: 'var(--primary)', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.375rem' }}>Get Started</Link>
           </>
         )}
       </div>
@@ -34,22 +35,25 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="min-h-screen" style={{ backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+        <div className="app-container">
           <NavBar />
-          
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             
-            {/* Protected Routes Wrapper */}
+            {/* Protected Routes */}
             <Route path="/kyc" element={
               <ProtectedRoute>
                 <KycCapture />
               </ProtectedRoute>
             } />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
             
-            {/* Catch all fallback */}
             <Route path="*" element={<Navigate to="/kyc" replace />} />
           </Routes>
         </div>

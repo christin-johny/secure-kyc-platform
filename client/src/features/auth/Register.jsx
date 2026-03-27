@@ -7,68 +7,71 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
+  const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     try {
       await register(name, email, password);
-      // If registration bypasses express-validator on backend and succeeds, 
-      // navigate into protected app because we automatically log them in via Context.
       navigate('/kyc'); 
     } catch (err) {
       setError(err.response?.data?.errors?.[0]?.msg || err.response?.data?.error || 'Registration failed');
     }
+    setIsLoading(false);
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '50px auto', padding: '30px', background: 'white', borderRadius: '8px', boxShadow: '0px 4px 6px rgba(0,0,0,0.1)' }}>
-      <h2 style={{ marginBottom: '10px' }}>Create an Account</h2>
-      {error && <div style={{ color: 'red', marginBottom: '15px', background: '#fee2e2', padding: '10px', borderRadius: '5px' }}>{error}</div>}
+    <div className="card">
+      <h2 className="page-title">Create Account</h2>
+      <p className="page-subtitle">Join the platform to securely submit your KYC details.</p>
+
+      {error && <div className="alert-error">{error}</div>}
       
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <div>
-          <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Full Name</label>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label className="form-label">Full Legal Name</label>
           <input 
             type="text" 
             required 
+            className="form-input"
             value={name} 
             onChange={(e) => setName(e.target.value)} 
-            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-            placeholder="John Doe"
+            placeholder="e.g. John Doe"
           />
         </div>
-        <div>
-          <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Email Address</label>
+        <div className="form-group">
+          <label className="form-label">Email Address</label>
           <input 
             type="email" 
             required 
+            className="form-input"
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
-            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
             placeholder="john@doe.com"
           />
         </div>
-        <div>
-          <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '5px' }}>Password</label>
+        <div className="form-group">
+          <label className="form-label">Secure Password</label>
           <input 
             type="password" 
             required 
+            className="form-input"
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
-            style={{ width: '100%', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
-            placeholder="Required: 8 min length"
+            placeholder="Required: 8+ characters"
           />
         </div>
-        <button type="submit" className="btn-primary" style={{ padding: '12px', fontSize: '1rem', marginTop: '10px' }}>
-          Create Account
+        <button type="submit" className={`btn btn-primary ${isLoading ? 'btn-disabled' : ''}`} disabled={isLoading}>
+          {isLoading ? 'Creating Identity...' : 'Register Securely'}
         </button>
       </form>
-      <p style={{ marginTop: '20px', textAlign: 'center' }}>
-        Already have an account? <Link to="/login" style={{ color: '#2563eb' }}>Login here</Link>
+      
+      <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+        Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Log in here</Link>
       </p>
     </div>
   );
