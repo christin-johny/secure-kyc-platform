@@ -13,6 +13,9 @@ const Dashboard = () => {
   const [previewMedia, setPreviewMedia] = useState(null);
  
   const debouncedSearch = useDebounce(search, 500);
+  
+  // High-performance compute: True if the user is typing OR the network is actively fetching
+  const isSearching = search !== debouncedSearch || loading;
  
   useEffect(() => {
     fetchUsers();
@@ -44,21 +47,36 @@ const Dashboard = () => {
       <h2 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Dashboard</h2>
       <p className="text-slate-400 mb-8 leading-relaxed">View all registered users.</p>
       
-      <div className="mb-6">
+      <div className="mb-6 relative">
+        <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
         <input 
           type="text" 
-          placeholder="Search by name or email address..." 
+          placeholder="Search securely by legal name or email address..." 
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1); 
           }}
-          className="w-full px-4 py-3 bg-slate-900/60 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner"
+          className="w-full pl-12 pr-12 py-3 bg-slate-900/60 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner"
         />
+        {isSearching && (
+          <div className="absolute right-4 top-1/2 -translate-y-1/2">
+            <div className="animate-spin rounded-full h-5 w-5 border-2 border-indigo-500 border-t-transparent shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-between items-center text-sm font-medium text-slate-400 mb-4 px-2">
-        <span>{loading ? 'Refreshing database...' : `Found ${totalRecords} users`}</span>
+        <span>
+          {loading ? (
+             <div className="flex items-center gap-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-indigo-500 border-t-transparent"></div>
+                Refreshing database...
+             </div>
+          ) : `Found ${totalRecords} users`}
+        </span>
       </div>
 
       <div className="w-full overflow-x-auto mt-4 border border-slate-700 rounded-2xl bg-slate-900/40 shadow-inner">
@@ -70,8 +88,15 @@ const Dashboard = () => {
               <th className="bg-slate-800/80 px-6 py-4 text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-700">KYC Documents</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-700/50">
-            {users.length > 0 ? (
+          <tbody className="divide-y divide-slate-700/50 relative">
+            {loading ? (
+              <tr>
+                <td colSpan="3" className="text-center py-16">
+                  <div className="inline-block animate-spin rounded-full h-10 w-10 border-4 border-indigo-500 border-t-transparent shadow-lg mb-4"></div>
+                  <p className="text-slate-400 font-medium animate-pulse text-sm tracking-wide">Securely decrypting identities...</p>
+                </td>
+              </tr>
+            ) : users.length > 0 ? (
               users.map(u => (
                 <tr key={u._id} className="hover:bg-white/[0.02] transition-colors">
                   <td className="px-6 py-4 text-slate-200 font-medium text-sm">{u.name}</td>
