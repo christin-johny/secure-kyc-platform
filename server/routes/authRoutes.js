@@ -6,10 +6,9 @@ const rateLimit = require('express-rate-limit');
 
 const router = express.Router();
 
-// Specific stricter limit just for Auth: exactly 5 requests per 15 mins to defeat credential stuffing
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, 
+  windowMs: 15 * 60 * 1000,  
+  max: 10, 
   message: { success: false, error: 'Maximum security threshold reached. Too many login attempts. Try again in 15 minutes.' }
 });
 

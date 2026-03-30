@@ -16,7 +16,6 @@ exports.protect = async (req, res, next) => {
     req.user = await User.findById(decoded.id);
     next();
   } catch (err) {
-    // Note: If token is expired, the frontend should catch this 401 and hit the /refresh endpoint
     return res.status(401).json({ success: false, error: 'Token expired or invalid' });
   }
 };

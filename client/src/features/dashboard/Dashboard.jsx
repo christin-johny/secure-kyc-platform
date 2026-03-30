@@ -14,7 +14,6 @@ const Dashboard = () => {
  
   const debouncedSearch = useDebounce(search, 500);
   
-  // High-performance compute: True if the user is typing OR the network is actively fetching
   const isSearching = search !== debouncedSearch || loading;
  
   useEffect(() => {
@@ -73,7 +72,7 @@ const Dashboard = () => {
           {loading ? (
              <div className="flex items-center gap-2">
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-indigo-500 border-t-transparent"></div>
-                Refreshing database...
+                searching...
              </div>
           ) : `Found ${totalRecords} users`}
         </span>

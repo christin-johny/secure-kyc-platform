@@ -24,7 +24,7 @@ app.use(cookieParser());
 
 const globalLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, 
-  max: 100,
+  max: 1000,
   message: { success: false, error: 'Too many requests from this IP, please try again after 10 minutes.' }
 });
 

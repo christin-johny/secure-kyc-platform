@@ -2,8 +2,7 @@ const s3Service = require('../services/s3Service');
 const User = require('../models/User');
 
 exports.uploadKycArtifacts = async (req, res) => {
-  try {
-    // req.files is populated automatically by the Multer middleware
+  try { 
     const imageFile = req.files?.image?.[0];
     const videoFile = req.files?.video?.[0];
 
@@ -13,7 +12,6 @@ exports.uploadKycArtifacts = async (req, res) => {
 
     const updates = {};
 
-    // Stream the Image buffer to AWS if present
     if (imageFile) {
       const imageKey = await s3Service.uploadFileToS3(
         imageFile.buffer, 
@@ -24,7 +22,6 @@ exports.uploadKycArtifacts = async (req, res) => {
       updates.kycImageKey = imageKey;
     }
 
-    // Stream the Video buffer to AWS if present
     if (videoFile) {
       const videoKey = await s3Service.uploadFileToS3(
         videoFile.buffer, 
@@ -35,7 +32,6 @@ exports.uploadKycArtifacts = async (req, res) => {
       updates.kycVideoKey = videoKey;
     }
 
-    // Only save the S3 Keys into MongoDB tracking fields
     await User.findByIdAndUpdate(req.user.id, updates);
 
     res.status(200).json({ success: true, message: 'KYC data securely stored in AWS S3 and MongoDB keys updated.' });

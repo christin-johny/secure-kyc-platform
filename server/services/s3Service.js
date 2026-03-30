@@ -3,7 +3,6 @@ const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 const crypto = require('crypto');
 const path = require('path');
 
-// Initialize S3 Client (v3)
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || 'us-east-1',
   credentials: {
@@ -14,11 +13,9 @@ const s3Client = new S3Client({
 
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 
-// SRP: Uploads a buffer to S3 and returns the strictly generated Object Key
 exports.uploadFileToS3 = async (fileBuffer, mimetype, originalName, folder = 'kyc') => {
   if (!BUCKET_NAME) throw new Error("AWS_BUCKET_NAME is not defined in .env");
 
-  // Generate a totally unique, unguessable file name to prevent collision
   const randomSuffix = crypto.randomBytes(16).toString('hex');
   const extension = path.extname(originalName) || (mimetype.includes('video') ? '.webm' : '.jpg');
   const key = `${folder}/${Date.now()}-${randomSuffix}${extension}`;
@@ -31,12 +28,10 @@ exports.uploadFileToS3 = async (fileBuffer, mimetype, originalName, folder = 'ky
   });
 
   await s3Client.send(command);
-  
-  // Notice we return ONLY the Key, not the URL, exactly as you requested!
+   
   return key; 
 };
-
-// SRP: Generates a temporary, 1-hour secure URL for a specific Object Key
+ 
 exports.getPresignedUrl = async (key) => {
   if (!key) return null;
   if (!BUCKET_NAME) return null;
@@ -45,8 +40,7 @@ exports.getPresignedUrl = async (key) => {
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,
       Key: key,
-    });
-    // URL expires natively in exactly 1 hour (3600 seconds)
+    }); 
     const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
     return url;
   } catch (error) {

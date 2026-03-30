@@ -1,10 +1,9 @@
 const userService = require('../services/userService');
 
-// SRP: Extracts query parameters and passes them to the Service
 exports.getUsers = async (req, res) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
-    const limit = parseInt(req.query.limit, 10) || 5; // Default limit of 5 records per page
+    const limit = parseInt(req.query.limit, 10) || 5; 
     const search = req.query.search || '';
 
     const paginationData = await userService.getUsersPaginated(page, limit, search);

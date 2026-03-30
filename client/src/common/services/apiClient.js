@@ -1,9 +1,5 @@
 import api from '../utils/api';
 
-/**
- * Industrial-grade API Service Layer
- * Maps raw backend network endpoints exclusively so React components don't hold messy hardcoded URLs.
- */
 
 export const DashboardAPI = {
   getUsers: async (page, limit, search) => {

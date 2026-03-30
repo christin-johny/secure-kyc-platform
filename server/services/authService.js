@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
-// Abstraction: Generates tokens internally
 const generateTokens = (id) => {
   const accessToken = jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.JWT_ACCESS_EXPIRE
@@ -12,7 +11,6 @@ const generateTokens = (id) => {
   return { accessToken, refreshToken };
 };
 
-// SRP: Handles ONLY the registration business logic
 exports.registerUser = async (name, email, password) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -22,7 +20,6 @@ exports.registerUser = async (name, email, password) => {
   return generateTokens(user._id);
 };
 
-// SRP: Handles ONLY the login business logic
 exports.loginUser = async (email, password) => {
   const user = await User.findOne({ email }).select('+password');
   if (!user || !(await user.matchPassword(password))) {
@@ -31,7 +28,6 @@ exports.loginUser = async (email, password) => {
   return generateTokens(user._id);
 };
 
-// SRP: Handles ONLY the refresh token decoding and renewal
 exports.refreshAccessToken = (refreshToken) => {
   if (!refreshToken) throw new Error('No refresh token provided');
   

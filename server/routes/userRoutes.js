@@ -4,7 +4,6 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Route is protected, meaning the user must be logged in with a valid JWT
 router.get('/', protect, getUsers);
 
 module.exports = router;

@@ -5,19 +5,16 @@ export const useCamera = () => {
   const [error, setError] = useState('');
   const videoRef = useRef(null);
 
-  // Securely attach the stream hardware only AFTER React mounts the video element
   useEffect(() => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
     }
   }, [stream]);
 
-  // Function to request camera/mic permissions
   const startCamera = useCallback(async (requireAudio = false) => {
     try {
-      // Access the native WebRTC API
       const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' }, // Pre-select front camera for mobile
+        video: { facingMode: 'user' },
         audio: requireAudio 
       });
       
@@ -29,7 +26,6 @@ export const useCamera = () => {
     }
   }, []);
 
-  // Function to turn off the physical camera light
   const stopCamera = useCallback(() => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
