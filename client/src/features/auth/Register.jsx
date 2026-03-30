@@ -10,7 +10,6 @@ const Register = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
-  // Custom Live Error States
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
@@ -26,7 +25,6 @@ const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Validate Name 
   useEffect(() => {
     if (!name) {
       setNameError('');
@@ -40,7 +38,6 @@ const Register = () => {
     }
   }, [name]);
 
-  // Validate Email
   useEffect(() => {
     if (!email) {
       setEmailError('');
@@ -54,7 +51,6 @@ const Register = () => {
     }
   }, [email]);
 
-  // Validate Password Dynamically
   useEffect(() => {
     setPasswordCriteria({
       length: password.length >= 8,
@@ -65,7 +61,6 @@ const Register = () => {
     });
   }, [password]);
 
-  // Validate Confirm Password
   useEffect(() => {
     if (!confirmPassword) {
       setConfirmPasswordError('');
@@ -99,67 +94,71 @@ const Register = () => {
   };
 
   return (
-    <div className="card">
-      <h2 className="page-title">Create Account</h2>
-      <p className="page-subtitle">Join the platform to securely submit your KYC details.</p>
+    <div className="bg-slate-800/80 backdrop-blur-md border border-slate-700 rounded-2xl p-8 md:p-10 w-full max-w-md mx-auto shadow-2xl">
+      <h2 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Create Account</h2>
+      <p className="text-slate-400 mb-8 leading-relaxed">Join the platform to submit your KYC details.</p>
 
-      {error && <div className="alert-error">{error}</div>}
+      {error && (
+        <div className="bg-red-500/10 border-l-4 border-red-500 text-red-400 p-4 rounded-md mb-6 text-sm">
+          {error}
+        </div>
+      )}
       
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">Full Legal Name</label>
+        <div className="mb-6 text-left">
+          <label className="block text-sm font-medium mb-2 text-slate-400">Full Name</label>
           <input 
             type="text" 
             required 
-            className={`form-input ${nameError ? 'input-error' : (name ? 'input-success' : '')}`}
+            className={`w-full px-4 py-3 bg-slate-900/60 border rounded-xl text-white focus:outline-none transition-all ${nameError ? 'border-red-500 bg-red-500/5 focus:ring-2 focus:ring-red-500/20' : (name ? 'border-emerald-500 bg-emerald-500/5 focus:ring-2 focus:ring-emerald-500/20' : 'border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20')}`}
             value={name} 
             onChange={(e) => setName(e.target.value)} 
             placeholder="e.g. John Doe"
           />
-          {nameError && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.4rem', fontWeight: '500' }}>{nameError}</p>}
+          {nameError && <p className="text-red-500 text-xs mt-2 font-medium">{nameError}</p>}
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Email Address</label>
+        <div className="mb-6 text-left">
+          <label className="block text-sm font-medium mb-2 text-slate-400">Email Address</label>
           <input 
             type="email" 
             required 
-            className={`form-input ${emailError ? 'input-error' : (email ? 'input-success' : '')}`}
+            className={`w-full px-4 py-3 bg-slate-900/60 border rounded-xl text-white focus:outline-none transition-all ${emailError ? 'border-red-500 bg-red-500/5 focus:ring-2 focus:ring-red-500/20' : (email ? 'border-emerald-500 bg-emerald-500/5 focus:ring-2 focus:ring-emerald-500/20' : 'border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20')}`}
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             placeholder="john@doe.com"
           />
-          {emailError && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.4rem', fontWeight: '500' }}>{emailError}</p>}
+          {emailError && <p className="text-red-500 text-xs mt-2 font-medium">{emailError}</p>}
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Secure Password</label>
+        <div className="mb-6 text-left">
+          <label className="block text-sm font-medium mb-2 text-slate-400">Secure Password</label>
           <input 
             type="password" 
             required 
-            className={`form-input ${password && !isPasswordValid ? 'input-error' : ''} ${isPasswordValid ? 'input-success' : ''}`}
+            className={`w-full px-4 py-3 bg-slate-900/60 border rounded-xl text-white focus:outline-none transition-all ${password && !isPasswordValid ? 'border-red-500 bg-red-500/5 focus:ring-2 focus:ring-red-500/20' : ''} ${isPasswordValid ? 'border-emerald-500 bg-emerald-500/5 focus:ring-2 focus:ring-emerald-500/20' : 'border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'}`}
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             placeholder="Enter a strong password"
           />
           
           {password && !isPasswordValid && (
-            <div className="validation-box">
-              <p className="validation-title">Password Requirements:</p>
-              <ul className="validation-list">
-                <li className={passwordCriteria.length ? 'valid' : 'invalid'}>
+            <div className="bg-slate-900/60 p-4 rounded-xl mt-3 border border-slate-700">
+              <p className="text-sm font-semibold text-slate-200 mb-2">Password Requirements:</p>
+              <ul className="text-xs space-y-1.5">
+                <li className={`flex items-center gap-2 transition-colors ${passwordCriteria.length ? 'text-emerald-500 font-medium' : 'text-slate-400'}`}>
                   {passwordCriteria.length ? '✓' : '○'} At least 8 characters
                 </li>
-                <li className={passwordCriteria.upper ? 'valid' : 'invalid'}>
+                <li className={`flex items-center gap-2 transition-colors ${passwordCriteria.upper ? 'text-emerald-500 font-medium' : 'text-slate-400'}`}>
                   {passwordCriteria.upper ? '✓' : '○'} One uppercase letter
                 </li>
-                <li className={passwordCriteria.lower ? 'valid' : 'invalid'}>
+                <li className={`flex items-center gap-2 transition-colors ${passwordCriteria.lower ? 'text-emerald-500 font-medium' : 'text-slate-400'}`}>
                   {passwordCriteria.lower ? '✓' : '○'} One lowercase letter
                 </li>
-                <li className={passwordCriteria.number ? 'valid' : 'invalid'}>
+                <li className={`flex items-center gap-2 transition-colors ${passwordCriteria.number ? 'text-emerald-500 font-medium' : 'text-slate-400'}`}>
                   {passwordCriteria.number ? '✓' : '○'} One number
                 </li>
-                <li className={passwordCriteria.special ? 'valid' : 'invalid'}>
+                <li className={`flex items-center gap-2 transition-colors ${passwordCriteria.special ? 'text-emerald-500 font-medium' : 'text-slate-400'}`}>
                   {passwordCriteria.special ? '✓' : '○'} One special character (!@#$%)
                 </li>
               </ul>
@@ -167,26 +166,30 @@ const Register = () => {
           )}
         </div>
 
-        <div className="form-group">
-          <label className="form-label">Confirm Password</label>
+        <div className="mb-8 text-left">
+          <label className="block text-sm font-medium mb-2 text-slate-400">Confirm Password</label>
           <input 
             type="password" 
             required 
-            className={`form-input ${confirmPasswordError ? 'input-error' : (confirmPassword && !confirmPasswordError ? 'input-success' : '')}`}
+            className={`w-full px-4 py-3 bg-slate-900/60 border rounded-xl text-white focus:outline-none transition-all ${confirmPasswordError ? 'border-red-500 bg-red-500/5 focus:ring-2 focus:ring-red-500/20' : (confirmPassword && !confirmPasswordError ? 'border-emerald-500 bg-emerald-500/5 focus:ring-2 focus:ring-emerald-500/20' : 'border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20')}`}
             value={confirmPassword} 
             onChange={(e) => setConfirmPassword(e.target.value)} 
             placeholder="Type your password again"
           />
-          {confirmPasswordError && <p style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.4rem', fontWeight: '500' }}>{confirmPasswordError}</p>}
+          {confirmPasswordError && <p className="text-red-500 text-xs mt-2 font-medium">{confirmPasswordError}</p>}
         </div>
         
-        <button type="submit" className={`btn btn-primary ${(isLoading || !isFormValid) ? 'btn-disabled' : ''}`} disabled={isLoading || !isFormValid}>
+        <button 
+          type="submit" 
+          className={`inline-flex items-center justify-center w-full px-6 py-3.5 rounded-xl font-semibold transition-all duration-300 ${(!isLoading && isFormValid) ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_0_15px_rgba(99,102,241,0.3)] hover:-translate-y-0.5' : 'bg-indigo-600/50 text-white/50 cursor-not-allowed'}`}
+          disabled={isLoading || !isFormValid}
+        >
           {isLoading ? 'Creating Identity...' : 'Register Securely'}
         </button>
       </form>
       
-      <p style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-        Already have an account? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Log in here</Link>
+      <p className="mt-8 text-center text-sm text-slate-400">
+        Already have an account? <Link to="/login" className="text-indigo-500 font-semibold no-underline hover:text-indigo-400 transition-colors">Log in here</Link>
       </p>
     </div>
   );

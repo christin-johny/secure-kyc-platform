@@ -44,7 +44,38 @@ exports.refresh = async (req, res) => {
     const accessToken = authService.refreshAccessToken(req.cookies.refreshToken);
     res.status(200).json({ success: true, accessToken });
   } catch (error) {
-    res.status(403).json({ success: false, error: error.message });
+    res.status(401).json({ success: false, error: 'Not authorized, token failed' });
+  }
+};
+
+const User = require('../models/User');
+const s3Service = require('../services/s3Service');
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password').lean();
+    
+    let imageUrl = null;
+    let videoUrl = null;
+    
+    if (user.kycImageKey) {
+       imageUrl = await s3Service.getPresignedUrl(user.kycImageKey);
+    }
+    if (user.kycVideoKey) {
+       videoUrl = await s3Service.getPresignedUrl(user.kycVideoKey);
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      data: {
+        ...user,
+        kycImageUrl: imageUrl,
+        kycVideoUrl: videoUrl
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 };
 

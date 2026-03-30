@@ -10,7 +10,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if we have a token stored in localStorage when the app loads
     if (token) {
       localStorage.setItem('token', token);
     } else {
@@ -20,29 +19,22 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
-    // 1. Post to backend
     const res = await api.post('/auth/login', { email, password });
-    // 2. Extract JWT access token
-    const { accessToken } = res.data;
-    // 3. Save to React state (which triggers our useEffect above)
-    setToken(accessToken);
+    setToken(res.data.accessToken);
   };
 
   const register = async (name, email, password, confirmPassword) => {
     const res = await api.post('/auth/register', { name, email, password, confirmPassword });
-    const { accessToken } = res.data;
-    setToken(accessToken);
+    setToken(res.data.accessToken);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
-    // Ping backend to clear httpOnly refresh cookie
     api.post('/auth/logout').catch(console.error); 
     window.location.href = '/login';
   };
 
-  // Prevent components from rendering until token is read from memory
   if (loading) return <div>Loading Application State...</div>;
 
   return (

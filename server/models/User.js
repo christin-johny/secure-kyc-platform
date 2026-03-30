@@ -21,6 +21,14 @@ const userSchema = new mongoose.Schema({
     minlength: 8,
     select: false 
   },
+  kycImageKey: {
+    type: String,
+    default: null
+  },
+  kycVideoKey: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

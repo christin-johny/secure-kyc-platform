@@ -1,9 +1,16 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 
 export const useCamera = () => {
   const [stream, setStream] = useState(null);
   const [error, setError] = useState('');
   const videoRef = useRef(null);
+
+  // Securely attach the stream hardware only AFTER React mounts the video element
+  useEffect(() => {
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [stream]);
 
   // Function to request camera/mic permissions
   const startCamera = useCallback(async (requireAudio = false) => {
@@ -15,11 +22,6 @@ export const useCamera = () => {
       });
       
       setStream(mediaStream);
-      
-      // Attach the stream to our HTML <video> tag
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-      }
       setError('');
     } catch (err) {
       setError('Camera access denied or device not found. Please allow permissions.');
